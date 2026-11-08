@@ -32,7 +32,9 @@ FAIL 4c  Page<Book> findByTitleLike("%Beta%") matching exactly one book
 
 ## Specification check (Jakarta Data 1.0)
 
-Bug. `Page<E>` is a valid return type for a Query by Method Name with a `PageRequest` (addendum, table "Repository Method Return Types"), and for offset pagination *"If PageRequest.requestTotal() returns true, the Page should contain accurate information about the total number of pages and total number of elements across all pages"* (spec 4.8.1.1).
+**Spec reference:** [Jakarta Data 1.0, 4.8.1.1 Requirements when using Offset Pagination](https://jakarta.ee/specifications/data/1.0/jakarta-data-1.0.html#_requirements_when_using_offset_pagination); [Query by Method Name addendum 1.0, 2.8 Return Types](https://jakarta.ee/specifications/data/1.0/jakarta-data-addendum-1.0.html#_return_types).
+
+Bug. `Page<E>` is a valid return type for a Query by Method Name with a `PageRequest` (addendum 2.8, table "Repository Method Return Types"), and for offset pagination *"If PageRequest.requestTotal() returns true, the Page should contain accurate information about the total number of pages and total number of elements across all pages"* (spec 4.8.1.1).
 The repository method provides the required sort criteria (an `Order` on the unique `title`, 4.8.1.1 *"Sort criteria must be provided"*). A `ClassCastException` from `totalElements()` is not a permitted outcome.
 
 ## Source analysis (read at tag `payara-server-7.2026.10`)
