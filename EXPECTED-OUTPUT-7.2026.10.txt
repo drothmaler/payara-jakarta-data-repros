@@ -1,82 +1,4 @@
 Payara Server 7.2026.10 (build 18)
-PASS 1a  control: findByAuthor(Author)
-       expected: [Alpha, Beta, Gamma]
-       actual:   [Alpha, Beta, Gamma]
-FAIL 1b  countByAuthor(Author)  (property 'author' has the entity type Author)
-       expected: 3
-       actual:   EXCEPTION org.eclipse.persistence.exceptions.JPQLException:  Exception Description: Problem compiling [SELECT COUNT(DISTINCT e) FROM Author e WHERE e.author = ?1]. [45, 53] The state field path 'e.author' cannot be resolved to a valid type. (SELECT COUNT(DISTINCT e) FROM Author e WHERE [ e.author ] ...
-FAIL 1c  deleteByAuthor(Author)
-       expected: no exception
-       actual:   EXCEPTION org.eclipse.persistence.exceptions.JPQLException:  Exception Description: Problem compiling [SELECT DISTINCT e FROM Author e WHERE e.author = ?1]. [38, 46] The state field path 'e.author' cannot be resolved to a valid type. (SELECT DISTINCT e FROM Author e WHERE [ e.author ] ...
-PASS 1d  control: countByAuthor_id(Long)
-       expected: 3
-       actual:   3
-FAIL 2a  @Query("select b from Book b order by b.title")  (static ORDER BY, no WHERE)
-       expected: [Alpha, Beta, Delta, Epsilon, Gamma, Zeta]
-       actual:   EXCEPTION org.eclipse.persistence.exceptions.JPQLException:  Exception Description: Problem compiling [SELECT b FROM BookBook b ORDER BY b.title]. [14, 22] The abstract schema type 'BookBook' is unknown. (SELECT b FROM [ BookBook ] ... [34, 41] The state field path 'b.title' cannot be resolved to a valid type. (SELECT b FROM BookBook b ORDER BY [ b.title ] ...
-PASS 2b  control: the same query with a WHERE (b.id > 0)
-       expected: [Alpha, Beta, Delta, Epsilon, Gamma, Zeta]
-       actual:   [Alpha, Beta, Delta, Epsilon, Gamma, Zeta]
-FAIL 2c  @Query("from Book order by title")  (the same in pure JDQL)
-       expected: [Alpha, Beta, Delta, Epsilon, Gamma, Zeta]
-       actual:   EXCEPTION org.eclipse.persistence.exceptions.JPQLException:  Exception Description: Problem compiling [FROM BookBook ORDER BY title]. [17, 25] The abstract schema type 'BookBook' is unknown. (SELECT this FROM [ BookBook ] ...
-FAIL 2d  @Query("select title from Book order by title")  (pure JDQL projection)
-       expected: [Alpha, Beta, Delta, Epsilon, Gamma, Zeta]
-       actual:   EXCEPTION org.eclipse.persistence.exceptions.JPQLException:  Exception Description: Problem compiling [SELECT title FROM BookBook ORDER BY title]. [18, 26] The abstract schema type 'BookBook' is unknown. (SELECT title FROM [ BookBook ] ...
-PASS 2e  control: @Query("order by title")  (pure JDQL without FROM)
-       expected: [Alpha, Beta, Delta, Epsilon, Gamma, Zeta]
-       actual:   [Alpha, Beta, Delta, Epsilon, Gamma, Zeta]
-FAIL 3a  @Query("select b from Book b where lower(b.title) like ?1") with Order<Book>
-       expected: [Alpha, Beta, Delta, Gamma, Zeta]
-       actual:   EXCEPTION org.eclipse.persistence.exceptions.JPQLException:  Exception Description: Problem compiling [SELECT b FROM Book b WHERE lower(b.title) like ?1 ORDER BY title ASC]. [59, 64] The identification variable 'title' is not defined in the FROM clause. (SELECT b FROM Book b WHERE lower(b.title) like ?1 ORDER BY [ title ] ...
-FAIL 3b  @Query("select b from Book b where lower(b.title) like ?1 order by b.title") returning Page<Book> (the count query)
-       expected: size=2 total=5
-       actual:   EXCEPTION org.eclipse.persistence.exceptions.JPQLException:  Exception Description: Problem compiling [SELECT COUNT(this) FROM Book WHERE lower(b.title) like ?1 ]. [41, 48] The state field path 'b.title' cannot be resolved to a valid type. (SELECT COUNT(this) FROM Book WHERE lower( [ b.title ] ...
-PASS 3c  control: alias-less JDQL "from Book where lower(title) like ?1" with Page + Order
-       expected: size=2 total=5
-       actual:   size=2 total=5 [Alpha, Beta]
-PASS 3d  control: alias-less JDQL "from Book where lower(title) like ?1 order by title" returning Page
-       expected: size=2 total=5
-       actual:   size=2 total=5 [Alpha, Beta]
-PASS 4a  control: Page<Book> findByTitleLike("%a%") matching 5 books
-       expected: size=2 total=5
-       actual:   size=2 total=5 [Alpha, Beta]
-PASS 4b  control: Page<Book> findByTitleLike("%x%") matching no book
-       expected: size=0 total=0
-       actual:   size=0 total=0 []
-FAIL 4c  Page<Book> findByTitleLike("%Beta%") matching exactly one book
-       expected: size=1 total=1
-       actual:   EXCEPTION java.lang.ClassCastException: class repro.model.Book cannot be cast to class java.lang.Long (repro.model.Book is in unnamed module of loader org.glassfish.web.loader.WebappClassLoader @2726c4ba; java.lang.Long is in module java.base of loader 'bootstrap')
-PASS 5a  control: List<Book> findByTitleStartsWith("B")
-       expected: [Beta]
-       actual:   [Beta]
-FAIL 5b  Page<Book> findByTitleStartsWith("B", PageRequest, Order)
-       expected: size=1 total=1
-       actual:   size=0 total=0 []
-FAIL 5c  Page<Book> findByTitleEndsWith("a", PageRequest, Order)
-       expected: size=2 total=5
-       actual:   size=0 total=0 []
-FAIL 5d  Page<Book> findByTitleContains("et", PageRequest, Order)
-       expected: size=2 total=2
-       actual:   size=0 total=0 []
-FAIL 7a  List<Book> findByTitleLike("%e")  (no title ends with e)
-       expected: []
-       actual:   [Beta, Delta, Zeta]
-FAIL 7b  List<Book> findByTitleLike("Bet")  (pattern without wildcard = equality)
-       expected: []
-       actual:   [Beta]
-FAIL 7c  List<Book> findByTitleIgnoreCaseLike("a%")  (starts with a, any case)
-       expected: [Alpha]
-       actual:   [Alpha, Beta, Delta, Gamma, Zeta]
-PASS 7d  control: List<Book> findByTitleLike("B%")
-       expected: [Beta]
-       actual:   [Beta]
-PASS 7e  control: @Query("where title like ?1") with "%e"
-       expected: []
-       actual:   []
-PASS 7f  control: Page<Book> findByTitleLike("%e", PageRequest, Order)
-       expected: size=0 total=0
-       actual:   size=0 total=0 []
 FAIL 6a  deleteByTitle("Alpha") called in a transaction that commits, rows counted afterwards
        expected: remaining=5
        actual:   remaining=6
@@ -89,23 +11,5 @@ PASS 6c  control: deleteByTitle("Alpha") called WITHOUT a surrounding transactio
 PASS 6d  control: @Query("delete from Book b where b.id in ?1") in a transaction that commits
        expected: remaining=5
        actual:   remaining=5
-FAIL 8a  rename a managed Book after deleteByTitle("Alpha") in the same transaction
-       expected: renamed=true
-       actual:   renamed=false managedAfterCall=false
-FAIL 8b  rename a managed Book after @Delete removeByTitle(@By("title") "Alpha")
-       expected: renamed=true
-       actual:   renamed=false managedAfterCall=false
-FAIL 8c  rename a managed Book after @Query("delete from Book where title = ?1")
-       expected: renamed=true
-       actual:   renamed=false managedAfterCall=false
-PASS 8d  control: rename a managed Book after books.findById(...)
-       expected: renamed=true
-       actual:   renamed=true managedAfterCall=true
-PASS 8e  control: rename a managed Book after em.remove(Alpha)
-       expected: renamed=true
-       actual:   renamed=true managedAfterCall=true
-PASS 8f  control: rename a managed Book BEFORE deleteByTitle("Alpha") in the same transaction
-       expected: renamed=true
-       actual:   renamed=true
 
-SUMMARY: 17 passed, 19 failed of 36
+SUMMARY: 2 passed, 2 failed of 4
