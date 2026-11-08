@@ -39,6 +39,8 @@ PASS 2e  control: @Query("order by title")  (pure JDQL without FROM)
 
 ## Specification check (Jakarta Data 1.0)
 
+**Spec reference:** [Jakarta Data 1.0, 5.7 Syntax](https://jakarta.ee/specifications/data/1.0/jakarta-data-1.0.html#_syntax); [Jakarta Data 1.0, 5.5.1 From clause](https://jakarta.ee/specifications/data/1.0/jakarta-data-1.0.html#_from_clause); [Jakarta Data 1.0, 5.5.2 Where clause](https://jakarta.ee/specifications/data/1.0/jakarta-data-1.0.html#_where_clause); [Jakarta Data 1.0, 5.5.5 Order clause](https://jakarta.ee/specifications/data/1.0/jakarta-data-1.0.html#_order_clause); [Jakarta Data 1.0, 5 Jakarta Data Query Language](https://jakarta.ee/specifications/data/1.0/jakarta-data-1.0.html#_jakarta_data_query_language).
+
 Bug, and a violation of the required JDQL support for 2c and 2d. The JDQL grammar (spec section 5.7) is `select_statement : select_clause? from_clause? where_clause? orderby_clause?` with `from_clause : 'FROM' entity_name`
 and `orderby_clause : 'ORDER' 'BY' orderby_item (',' orderby_item)*`, so `from Book order by title` and `select title from Book order by title` are valid JDQL; the where clause *"is always optional"* (5.5.2).
 Case 2a uses an identification variable (`Book b`), which is JPQL, not JDQL: a provider *"might choose to allow the use of a much larger subset of JPQL"* (chapter 5), and Payara does (control 2b), so 2a is the same defect in that extension.
