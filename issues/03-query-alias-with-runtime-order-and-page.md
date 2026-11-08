@@ -41,6 +41,8 @@ PASS 3d  control: alias-less JDQL "from Book where lower(title) like ?1 order by
 
 ## Specification check (Jakarta Data 1.0)
 
+**Spec reference:** [Jakarta Data 1.0, 5 Jakarta Data Query Language](https://jakarta.ee/specifications/data/1.0/jakarta-data-1.0.html#_jakarta_data_query_language); [Jakarta Data 1.0, 5.7 Syntax](https://jakarta.ee/specifications/data/1.0/jakarta-data-1.0.html#_syntax); [Jakarta Data 1.0, 4.7.1 Sort Criteria within Query Language](https://jakarta.ee/specifications/data/1.0/jakarta-data-1.0.html#_sort_criteria_within_query_language); [Jakarta Data 1.0, 4.8.1.1 Requirements when using Offset Pagination](https://jakarta.ee/specifications/data/1.0/jakarta-data-1.0.html#_requirements_when_using_offset_pagination).
+
 Not a violation of required behaviour, but a defect in Payara's JPQL support. The queries use an identification variable, which JDQL does not have (`from_clause : 'FROM' entity_name`, spec section 5.7), so they are JPQL;
 JPQL in `@Query` is an optional provider extension (*"A Jakarta Data provider backed by access to a relational database might choose to allow the use of a much larger subset of JPQL—or even the whole language—via the @Query annotation. Such extensions are not required by this specification."*, chapter 5).
 Payara accepts these queries (they run without `Order` / `Page`), and the way they are combined with `Order` and `Page` is spec-conformant: a `@Query` without `ORDER BY` that ends with a `WHERE` *"can use other mechanisms … for providing sort criteria"* (4.7.1, case 3a),
