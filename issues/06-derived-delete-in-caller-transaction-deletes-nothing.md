@@ -37,8 +37,10 @@ PASS 6d  control: @Query("delete from Book b where b.id in ?1") in a transaction
 
 ## Specification check (Jakarta Data 1.0)
 
+**Spec reference:** [Jakarta Data 1.0, 7.3 Jakarta Transactions](https://jakarta.ee/specifications/data/1.0/jakarta-data-1.0.html#_jakarta_transactions); [Query by Method Name addendum 1.0, 2.7 Query by Method Name Conditions](https://jakarta.ee/specifications/data/1.0/jakarta-data-addendum-1.0.html#_query_by_method_name_conditions); [Query by Method Name addendum 1.0, 2.8 Return Types](https://jakarta.ee/specifications/data/1.0/jakarta-data-addendum-1.0.html#_return_types).
+
 Bug. Section 7.3 ("Jakarta Transactions"): when a global transaction is active on the calling thread and the data source can enlist, *"then the repository operation must be performed within the context of the global transaction"*. The delete is reported as done and the caller's transaction commits, but the removal is not part of it.
-`void` is a valid return type for a derived delete (addendum, table "Repository Method Return Types"), and `deleteByIdIn(Set<Long>)` uses the `In` condition with the `Set` parameter the addendum specifies (2.7).
+`void` is a valid return type for a derived delete (addendum 2.8, table "Repository Method Return Types"), and `deleteByIdIn(Set<Long>)` uses the `In` condition with the `Set` parameter the addendum specifies (2.7).
 
 ## Source analysis (read at tag `payara-server-7.2026.10`)
 
