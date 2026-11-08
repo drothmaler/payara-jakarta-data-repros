@@ -43,6 +43,8 @@ PASS 7f  control: Page<Book> findByTitleLike("%e", PageRequest, Order)      actu
 
 ## Specification check (Jakarta Data 1.0)
 
+**Spec reference:** [Query by Method Name addendum 1.0, 2.7 Query by Method Name Conditions](https://jakarta.ee/specifications/data/1.0/jakarta-data-addendum-1.0.html#_query_by_method_name_conditions); [Jakarta Data 1.0, 5.4.4 Like expressions](https://jakarta.ee/specifications/data/1.0/jakarta-data-1.0.html#_like_expressions).
+
 Bug. The Query by Method Name extension (Jakarta Data 1.0 addendum, section 2.7, table "Query by Method Name Conditions") defines `Like` as *"Matches string values against the given pattern"*, and
 *"Wildcard characters for patterns are determined by the data store. For relational databases, `_` matches any one character and `%` matches zero or more characters."* The caller writes the pattern; the provider must not add wildcards.
 By contrast `Contains`, `StartsWith` and `EndsWith` are defined as *"…with the given substring / beginning / ending, which can be a pattern"*, so adding `%` is correct for those three, and they are not affected.
