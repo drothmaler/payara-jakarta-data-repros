@@ -4,7 +4,7 @@
 
 ## Summary
 
-`void deleteByTitle(String title)` and `void deleteByIdIn(Collection<Long> ids)` on a `CrudRepository<Book, Long>` do **not delete** when they are called from a method that runs in a JTA transaction (`@Transactional`, an EJB, ...). No exception, the transaction commits, and the rows are still there.
+`void deleteByTitle(String title)` and `void deleteByIdIn(Set<Long> ids)` on a `CrudRepository<Book, Long>` do **not delete** when they are called from a method that runs in a JTA transaction (`@Transactional`, an EJB, ...). No exception, the transaction commits, and the rows are still there.
 Called without a surrounding transaction (case 6c) they delete, and an explicit `@Query("delete from Book b where b.id in ?1")` deletes in a transaction (case 6d).
 
 ## Environment
@@ -34,6 +34,11 @@ FAIL 6b  deleteByIdIn(ids of Alpha) called in a transaction that commits
 PASS 6c  control: deleteByTitle("Alpha") called WITHOUT a surrounding transaction     actual: remaining=5
 PASS 6d  control: @Query("delete from Book b where b.id in ?1") in a transaction that commits   actual: remaining=5
 ```
+
+## Specification check (Jakarta Data 1.0)
+
+Bug. Section 7.3 ("Jakarta Transactions"): when a global transaction is active on the calling thread and the data source can enlist, *"then the repository operation must be performed within the context of the global transaction"*. The delete is reported as done and the caller's transaction commits, but the removal is not part of it.
+`void` is a valid return type for a derived delete (addendum, table "Repository Method Return Types"), and `deleteByIdIn(Set<Long>)` uses the `In` condition with the `Set` parameter the addendum specifies (2.7).
 
 ## Source analysis (read at tag `payara-server-7.2026.10`)
 

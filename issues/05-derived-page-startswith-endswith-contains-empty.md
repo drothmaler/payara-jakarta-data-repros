@@ -32,6 +32,11 @@ FAIL 5c  Page<Book> findByTitleEndsWith("a", PageRequest, Order)    actual: size
 FAIL 5d  Page<Book> findByTitleContains("et", PageRequest, Order)   actual: size=0 total=0 []
 ```
 
+## Specification check (Jakarta Data 1.0)
+
+Bug. The addendum (section 2.7, "Query by Method Name Conditions") defines `StartsWith` as *"Matches String values with the given beginning, which can be a pattern"*, `EndsWith` as *"…with the given ending…"* and `Contains` as *"…with the given substring…"*; nothing depends on the return type, and `Page<E>` with a `PageRequest` is a valid return type (table "Repository Method Return Types").
+The methods provide the required sort criteria (`Order` on the unique `title`, spec 4.8.1.1). An empty page for matching rows is wrong.
+
 ## Source analysis (read at tag `payara-server-7.2026.10`)
 
 The `List` path adds the wildcards when it binds the parameters ([QueryByNameOperationUtility.setQueryParameters L521-L545](https://github.com/payara/Payara/blob/payara-server-7.2026.10/appserver/data/data-core/src/main/java/fish/payara/data/core/util/QueryByNameOperationUtility.java#L521-L545): `StartsWith` appends `%`, `EndsWith` prepends it, `Contains` / `Like` wrap the value).

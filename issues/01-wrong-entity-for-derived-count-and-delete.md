@@ -35,6 +35,12 @@ FAIL 1c  deleteByAuthor(Author)
                  [SELECT DISTINCT e FROM Author e WHERE e.author = ?1]. ...
 ```
 
+## Specification check (Jakarta Data 1.0)
+
+Bug. Chapter 4 ("Repository Interfaces") fixes the entity type: *"For repository methods that are annotated with @Insert, @Update, @Save, or @Delete, the entity type is determined from the method parameter type. For find and delete methods where the return type is an entity, array of entity, or parameterized type such as List<MyEntity> or Page<MyEntity>, the entity type is determined from the method return type. For count, exists, and other delete methods that do not return the entity or accept the entity as a parameter, the entity type cannot be determined from the method signature and a primary entity type must be defined for the repository."*
+and *"The primary entity type is assumed for methods that do not otherwise specify an entity type, such as countByPriceLessThan."* `countByAuthor` and `deleteByAuthor` are not annotated lifecycle methods, so their entity is the primary entity `Book`; the `Author` argument is only the value of the `author` condition.
+Portability note: comparing an association with an entity instance relies on entity associations, which the core spec does not require (*"Support for entity associations is not required by this specification"*, 3.1.5). Payara supports it (control 1a), so the defect is the wrong entity, not the comparison; the portable form is the compound name `countByAuthor_id(Long)` (addendum 2.9, control 1d).
+
 ## Source analysis (read at tag `payara-server-7.2026.10`)
 
 `DynamicInterfaceDataProducer` sets the method's entity from `findEntityTypeInMethod(method)` ([L352](https://github.com/payara/Payara/blob/payara-server-7.2026.10/appserver/data/data-core/src/main/java/fish/payara/data/core/cdi/extension/DynamicInterfaceDataProducer.java#L352)).

@@ -30,6 +30,11 @@ FAIL 4c  Page<Book> findByTitleLike("%Beta%") matching exactly one book
        actual:   EXCEPTION java.lang.ClassCastException: class repro.model.Book cannot be cast to class java.lang.Long
 ```
 
+## Specification check (Jakarta Data 1.0)
+
+Bug. `Page<E>` is a valid return type for a Query by Method Name with a `PageRequest` (addendum, table "Repository Method Return Types"), and for offset pagination *"If PageRequest.requestTotal() returns true, the Page should contain accurate information about the total number of pages and total number of elements across all pages"* (spec 4.8.1.1).
+The repository method provides the required sort criteria (an `Order` on the unique `title`, 4.8.1.1 *"Sort criteria must be provided"*). A `ClassCastException` from `totalElements()` is not a permitted outcome.
+
 ## Source analysis (read at tag `payara-server-7.2026.10`)
 
 For derived queries the count query is set to the **select** query: `dataForQuery.setCountQueryString(jpql.toString())` ([QueryByNameOperationUtility L394](https://github.com/payara/Payara/blob/payara-server-7.2026.10/appserver/data/data-core/src/main/java/fish/payara/data/core/util/QueryByNameOperationUtility.java#L394)) although a `countClause` is built just above it.
