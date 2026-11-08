@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="https://jakarta.ee/xml/ns/persistence" version="3.2">
+    <persistence-unit name="repro-pu" transaction-type="JTA">
+        <!-- Payara's built-in default data source (embedded database): nothing to install or configure -->
+        <jta-data-source>java:comp/DefaultDataSource</jta-data-source>
+        <class>repro.model.Author</class>
+        <class>repro.model.Book</class>
+        <exclude-unlisted-classes>true</exclude-unlisted-classes>
+        <properties>
+            <property name="jakarta.persistence.schema-generation.database.action" value="drop-and-create"/>
+        </properties>
+    </persistence-unit>
+</persistence>
