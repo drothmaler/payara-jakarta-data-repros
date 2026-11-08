@@ -44,6 +44,8 @@ PASS 8f  control: rename a managed Book BEFORE deleteByTitle("Alpha")        act
 
 ## Specification check
 
+**Spec reference:** [Jakarta Data 1.0, 7.4 Jakarta Persistence](https://jakarta.ee/specifications/data/1.0/jakarta-data-1.0.html#_jakarta_persistence); [Jakarta Data 1.0, 7.3 Jakarta Transactions](https://jakarta.ee/specifications/data/1.0/jakarta-data-1.0.html#_jakarta_transactions).
+
 Not a violation of a Jakarta Data 1.0 rule, but a defect: Jakarta Data 1.0 leaves the integration with Jakarta Persistence undefined (section 7.4: *"Integration with Jakarta Persistence is left undefined in this first release of Jakarta Data."*).
 What the spec does say is that repository work in a global transaction *"is usually transparent to the code acting as client of the repository"* (section 7.3).
 Payara's repository uses the caller's transaction-scoped persistence context (control 8d: entities stay managed after a repository read), and Jakarta Persistence defines `EntityManager.clear()` as detaching *all* managed entities of that context, with unflushed changes not persisted.
