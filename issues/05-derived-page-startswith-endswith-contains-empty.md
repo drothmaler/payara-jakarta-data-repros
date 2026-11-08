@@ -34,7 +34,9 @@ FAIL 5d  Page<Book> findByTitleContains("et", PageRequest, Order)   actual: size
 
 ## Specification check (Jakarta Data 1.0)
 
-Bug. The addendum (section 2.7, "Query by Method Name Conditions") defines `StartsWith` as *"Matches String values with the given beginning, which can be a pattern"*, `EndsWith` as *"…with the given ending…"* and `Contains` as *"…with the given substring…"*; nothing depends on the return type, and `Page<E>` with a `PageRequest` is a valid return type (table "Repository Method Return Types").
+**Spec reference:** [Query by Method Name addendum 1.0, 2.7 Query by Method Name Conditions](https://jakarta.ee/specifications/data/1.0/jakarta-data-addendum-1.0.html#_query_by_method_name_conditions); [Query by Method Name addendum 1.0, 2.8 Return Types](https://jakarta.ee/specifications/data/1.0/jakarta-data-addendum-1.0.html#_return_types); [Jakarta Data 1.0, 4.8.1.1 Requirements when using Offset Pagination](https://jakarta.ee/specifications/data/1.0/jakarta-data-1.0.html#_requirements_when_using_offset_pagination).
+
+Bug. The addendum (section 2.7, "Query by Method Name Conditions") defines `StartsWith` as *"Matches String values with the given beginning, which can be a pattern"*, `EndsWith` as *"…with the given ending…"* and `Contains` as *"…with the given substring…"*; nothing depends on the return type, and `Page<E>` with a `PageRequest` is a valid return type (table "Repository Method Return Types", addendum 2.8).
 The methods provide the required sort criteria (`Order` on the unique `title`, spec 4.8.1.1). An empty page for matching rows is wrong.
 
 ## Source analysis (read at tag `payara-server-7.2026.10`)
